@@ -1,0 +1,15 @@
+.fc-media-screen ::ng-deep .fc-timegrid-event {
+    bottom: -18px !important;    
+    top: 0px !important;
+    height: 20px;
+    margin: 0px
+}
+.fc-daygrid-dot-event .fc-event-title {
+    font-weight: 500 !important;
+}
+.fc-timegrid-event-condensed ::ng-deep .fc-event-main-frame {
+    height: 15px !important;
+}
+.tooltip{
+    opacity: 1 !important;
+}

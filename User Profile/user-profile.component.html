@@ -1,0 +1,1011 @@
+<div class="container-fluid">
+  <!-- <app-page-title title="My Profile" [breadcrumbItems]="breadCrumbItems"></app-page-title> -->
+
+  <div class="row">
+    <div class="col-xl-6">
+      <app-page-title title="My Profile"></app-page-title>
+    </div>
+    <div class="col-xl-6">
+      <div class="float-end">
+        <!-- <button *ngIf="userType == 'ConsultantGroup' || userType == 'ConsulteeGroup' || userType == 'HybridGroup'"
+          (click)="editGroupProfile()" class="btn btn-info btn-sm">Edit
+          <i class="fas fa-edit ms-1"></i></button>
+
+        <button *ngIf="userType != 'ConsultantGroup' && userType != 'ConsulteeGroup' && userType != 'HybridGroup'"
+          (click)="editBasicProfile()" class="btn btn-info btn-sm">Edit
+          <i class="fas fa-edit ms-1"></i></button>
+        &nbsp; -->
+
+
+
+        <button (click)="changePassword()" class="btn btn-info btn-sm">
+          <i class="mdi mdi-lock ms-1"></i>
+          Change Password </button>&nbsp;
+
+        <a *ngIf="userType == 'Consultant' && userProfile?.totalRating > 0" class="badge font-size-14"
+          href="javascript:void(0)" (click)='ratingReviewList(userProfile?.id,userProfile?.totalRating)'
+          [ngClass]="[userProfile?.totalRating > 3 ? 'rating-green' : 'rating-red']">
+          <i class="mdi mdi-star me-1"></i>
+          {{userProfile?.totalRating}}
+        </a>
+        <a *ngIf="userType == 'Consultant' && (userProfile?.totalRating == 0||userProfile?.totalRating==null)"
+          class="badge font-size-14" href="javascript:void(0)"
+          (click)='ratingReviewList(userProfile?.id,userProfile?.totalRating)'
+          [ngClass]="[userProfile?.totalRating > 3 ? 'rating-green' : 'rating-gray']">
+          <i></i>
+          N/A
+        </a>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-12">
+
+      <div class="card overflow-hidden" *ngIf="!groupProfileData">
+
+        <div class="card-body pt-0">
+          <div class="row">
+
+            <div class="col-sm-12">
+              <div class="user-info">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <h5 class="mb-2">Personal Information
+                      <button
+                        *ngIf="userType == 'ConsultantGroup' || userType == 'ConsulteeGroup' || userType == 'HybridGroup'"
+                        (click)="editGroupProfile()" class="btn btn-info btn-sm float-end">Edit
+                        <i class="fas fa-edit ms-1"></i></button>
+
+                      <button
+                        *ngIf="userType != 'ConsultantGroup' && userType != 'ConsulteeGroup' && userType != 'HybridGroup'"
+                        (click)="editBasicProfile()" class="btn btn-info btn-sm float-end">Edit
+                        <i class="fas fa-edit ms-1"></i></button>
+
+                    </h5>
+                    <hr>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <div class="user-info-det text-capitalize"><label title="Full Name"><i class="far fa-user"></i>
+                            {{userProfile?.firstName}} <span *ngIf="userProfile?.middleName">{{userProfile?.middleName}}
+                            </span> {{userProfile?.lastName}} </label></div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="user-info-det text-capitalize">
+                          <label title="Gender | Dob "><i class="fas fa-venus-mars"></i>
+                            <span>{{userProfile?.gender|titlecase}}</span> |
+                            <span>{{userProfile?.birthDate|date:'dd MMM yyyy'}}</span></label>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-3">
+                        <div class="user-info-det text-lowercase"><label title="Email Id"><i
+                              class="far fa-envelope"></i>
+                            {{userProfile?.email}}</label></div>
+                      </div>
+
+                      <div class="col-sm-3">
+                        <div class="user-info-det"><label title="Mobile Number"><i class="fas fa-phone-alt"></i>
+                            {{userProfile?.phoneNumber}}</label></div>
+                      </div>
+
+
+
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-4" *ngIf="userType == 'Facilitator'">
+                        <div class="user-info-det">
+                          <label title="Primary Language">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span> {{userProfile?.professionalInfo?.languageName}}</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-4" *ngIf="userType == 'Facilitator' && issecondarylanguage">
+                        <div class="user-info-det">
+                          <label title=" SecondaryLanguage"><i class="fas fa-mail-bulk"></i>
+                            {{userProfile?.professionalInfo?.secondaryLanguageName}}</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-4" *ngIf="userType == 'Facilitator'">
+                        <div class="user-info-det">
+                          <label title="TimeZone"><i class="fas fa-mail-bulk"></i>
+                            {{userProfile?.professionalInfo?.timeZoneShow}}</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+
+                      <div class="col-sm-2" *ngIf="userType != 'Facilitator'">
+                        <div class="user-info-det">
+                          <label title="Experience"><i class="fas fa-info-circle"></i>
+                            {{userProfile?.professionalInfo?.experience}}</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="user-info-det">
+                          <label title="Address"><i class="fas fa-map-marker-alt"></i>
+                            <span>{{userProfile?.address1}},</span> <span> {{userProfile?.city}},</span> <span>
+                              {{userProfile?.state}},</span> <span> {{userProfile?.country}}</span></label>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-2">
+                        <div class="user-info-det">
+                          <label title="ZIP/Postal Code"><i class="fas fa-mail-bulk"></i>
+                            {{userProfile?.zipCode}}</label>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-2">
+                        <div class="user-info-det"><label title="Account Status"><i class="fas fa-toggle-on"></i> <span
+                              *ngIf="userProfile?.isActive;else notActive"
+                              class="badge badge-soft-primary font-size-14">Active</span>
+                            <ng-template #notActive>
+                              <span class="badge badge-soft-danger font-size-14">Inactive</span>
+                            </ng-template>
+                          </label></div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-1 text-center">
+
+                    <!-- <div class="  mb-0">
+                      <img [src]="userProfile?.profilePicUrl || 'assets/images/users/avatar-blank.png'" alt=""
+                        class="img-thumbnail rounded-circle">
+                    </div> -->
+
+                    <div class=" mb-0" *ngIf="userProfile?.profilePicUrl; else noAvatar;">
+                      <img [src]="userProfile?.profilePicUrl" alt="" class="img-thumbnail rounded-circle">
+                    </div>
+                    <ng-template #noAvatar>
+                      <div class=" mb-0">
+                        <img src="assets/images/users/avatar-blank.png" alt="" class="img-thumbnail rounded-circle">
+                      </div>
+                    </ng-template>
+
+                    <a class=" images-change" title="Images Change" (click)="f.click()" type="submit"><i
+                        class="fas fa-user-edit"></i></a>
+                    <input style="display: none;" #f type="file" (change)="selectProfileImage($event,'user')"
+                      id="file-input" accept="image/png, image/jpeg">
+
+                    <!-- <div class="row">
+                    <div class="col-sm-12">
+                      <div *ngIf="userType=='Consultant'" class=" text-center" >
+                        <div class="  mb-0">
+                          <img [src]="userProfile?.professionalInfo.signature||'assets/images/users/signature.png'" alt=""
+                            class="" style="height: 60px; width: 100%">
+                        </div>
+                        <a class=" images-change" title="Signature Change" (click)="s.click()" type="submit"><i class="fas fa-edit"></i></a>
+                        <input style="display: none;" #s type="file" (change)="selectSignature($event)" id="file-input"
+                          accept="image/png, image/jpeg">
+                      </div>
+                    </div>
+                  </div> -->
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Professional info -->
+            <div class="col-sm-12" *ngIf="userProfile?.professionalInfo && userType != 'Facilitator'">
+              <h5 class=" mt-4 mb-2">Professional Information
+                <a href="javascript:void(0);" class="btn btn-info btn-sm float-end"
+                  (click)="editProfessionalProfile()">Edit
+                  <i class="fas fa-edit ms-1"></i></a>
+              </h5>
+              <hr>
+
+              <div class="user-info">
+                <div class="row">
+             
+                  <div class="row sec-licence"
+                    *ngIf="isNotUS && userType != 'Facilitator' && userProfile?.professionalInfo?.licenseDetails.length > 0">
+                    <div class="col-sm-3"
+                      *ngFor="let item of userProfile?.professionalInfo?.licenseDetails; let i = index">
+                      <div class="user-info-det">
+                        <label title="State License {{i+1}}"><i class="fas fa-sort-numeric-up-alt"></i>
+                          {{item.states}} |
+                          {{item.statelicense}} |
+                          {{item.statelicenseexpiration | date:'dd MMM yyyy'}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row sec-licence"
+                    *ngIf="!isNotUS && userType != 'Facilitator' && userProfile?.professionalInfo?.licenseDetails.length > 0">
+                    <div class="col-sm-3"
+                      *ngFor="let item of userProfile?.professionalInfo?.licenseDetails; let i = index">
+                      <div class="user-info-det">
+                        <label title="Medical License {{i+1}}">
+                          <i class="fas fa-sort-numeric-up-alt"></i>
+                          {{item.states}} |
+                          {{item.medicallicense}} |
+                          {{item.medicallicenseexpiration | date:'dd MMM yyyy'}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+              
+
+                  <div class="col-sm-3">
+                    <div class="user-info-det text-lowercase">
+                      <label title="Primary Language"><i class="far fa-envelope"></i>
+                        {{userProfile?.professionalInfo?.languageName}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="issecondarylanguage">
+                    <div class="user-info-det text-lowercase">
+                      <label title="Secondary Language"><i class="far fa-envelope"></i>
+                        {{userProfile?.professionalInfo?.secondaryLanguageName}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" *ngIf="isNotUS && userType != 'Facilitator'">
+                    <div class="user-info-det">
+                      <label title="NPI"><i class="fas fa-sort-numeric-up-alt"></i>
+                        {{userProfile?.professionalInfo?.npi}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="userType != 'Facilitator'">
+                    <div class="user-info-det">
+                      <label title="Time Zone"><i class="far fa-calendar-alt"></i>
+                        {{userProfile?.professionalInfo?.timeZoneShow}}</label>
+                    </div>
+                  </div>
+                
+
+                  <div class="col-sm-3" *ngIf="userType != 'Facilitator'">
+                    <div class="user-info-det">
+                      <label title="Board Certification "><i class="fas fa-sort-numeric-up-alt"></i>
+                        {{userProfile?.professionalInfo?.boardCertification}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="userType != 'Facilitator'">
+                    <div class="user-info-det">
+                      <label title="Date Certified "><i class="fas fa-sort-numeric-up-alt"></i>
+                        {{userProfile?.professionalInfo?.dateCertified}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="userType != 'Facilitator' && isDateRecertifiedShow">
+                    <div class="user-info-det">
+                      <label title="Date ReCertified"><i class="fas fa-sort-numeric-up-alt"></i>
+                        {{userProfile?.professionalInfo?.dateRecertified}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="user-info-det">
+                      <label title="Residency Program"><i class="far fa-user"></i>
+                        {{userProfile?.professionalInfo?.university}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="userType!='Consultant'">
+                    <div class="user-info-det">
+                      <label title="Residency Contact Person"><i class="far fa-user"></i>
+                        {{userProfile?.professionalInfo?.universityContactPerson}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="userType!='Consultant'">
+                    <div class="user-info-det">
+                      <label title="Residency PhoneNumber"><i class="fas fa-phone-alt"></i>
+                        {{userProfile?.professionalInfo?.universityPhoneNumber}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="user-info-det">
+                      <label title="Bio"><i class="fas fa-align-left"></i>
+                        {{userProfile?.professionalInfo?.bio}}</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3" *ngIf="iswebSiteUrl">
+                    <div class="user-info-det">
+                      <a href="https://{{userProfile?.websiteUrl}}">
+                        <label title="Website Url"><i class="fas fa-phone-alt"></i>
+                          {{userProfile?.websiteUrl}}</label> </a>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="user-info-det text-lowercase">
+                      <label title="Specialty"><i class="far fa-envelope"></i>
+                        {{userProfile?.professionalInfo?.specialtyName}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="user-info-det text-lowercase">
+                      <label title="Sub Specialty"><i class="far fa-envelope"></i>
+                        {{userProfile?.professionalInfo?.subSpecialtyName}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" *ngIf="isFellowshipShow">
+                    <div class="user-info-det">
+                      <label title="Fellowship" ><i class="far fa-user"></i>
+                        {{userProfile?.professionalInfo?.fellowship}}</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9"></div>
+                    <div class="col-sm-3">
+                      <div *ngIf="userType=='Consultant'|| userType=='Consultee'" class=" text-center float-end">
+                        <div class="  mb-0">
+                          <img [src]="userProfile?.digitalSignature||'assets/images/users/signature.png'" alt=""
+                            style="border:1px solid #ccc; min-height: 60px; width: 100%">
+                        </div>
+                        <a class=" images-change-sign" title="Signature Change" (click)="digitalSignatureModel()"
+                          type="submit"><i class="fas fa-edit"></i></a>
+
+                      </div>
+                    </div>
+                  </div>        
+
+                </div>
+              </div>
+
+
+            </div>
+
+            <!---Associate Group-->
+            <div *ngFor="let item of groupAssoProfileData; let i = index">
+              <div class="col-sm-12">
+                <div class="user-info">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <h5 class="mb-2">Associate Group
+                      </h5>
+                      <hr>
+                    </div>
+                    <div class="col-sm-1 text-center" style="padding: 0;">
+                      <div class=" mb-0">
+                        <img ngbTooltip="image Change"
+                          [src]="item.profilePicUrl||'assets/images/users/avatar-blank.png'" alt=""
+                          class="img-thumbnail rounded-circle">
+                      </div>
+                    </div>
+                    <div class="col-sm-11">
+
+                      <div class="user-info">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div ngbTooltip="Group Name" class="user-info-det"><label ngbTooltip="Details"
+                                class="text-capitalize"><i class="fas fa-users"></i>
+                                <strong class="text-md"> {{item.groupName}}</strong> <small>
+                                  ({{item.providerGroupType}})</small></label></div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="user-info-det"><label title="Group Admin Name" class="text-capitalize"><i
+                                  class="far fa-user"></i>
+                                {{item.firstName}} <span *ngIf="item.middleName">{{item.middleName}} </span>
+                                {{item.lastName}}
+                              </label></div>
+                          </div>
+
+
+                          <div class="col-sm-3">
+                            <div class="user-info-det"><label title="Email Id">
+                                <i class="far fa-envelope"></i> {{item.email}}</label></div>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <div class="user-info-det"><label title="Mobile Number">
+                                <i class="fas fa-phone-alt"></i> {{item.phoneNumber}}</label></div>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <div class="user-info-det"><label title="Account Status">
+                                <i class="fas fa-toggle-on"></i>
+                                <span *ngIf="item.isActive;else notActive"
+                                  class="badge badge-soft-primary font-size-14">Active</span>
+                                <ng-template #notActive>
+                                  <span class="badge badge-soft-danger font-size-14">Inactive</span>
+                                </ng-template>
+                              </label></div>
+                          </div>
+
+                          <div class="col-sm-9">
+                            <div class="user-info-det"><label title="Address"><i class="fas fa-map-marker-alt"></i>
+                                <span>{{item.address}},</span> <span> {{item.city}},</span>
+                                <span> {{item.state}},</span> <span> {{item.country}}</span>
+                              </label></div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="user-info-det"><label title="ZIP/Postal Code"><i class="fas fa-mail-bulk"></i>
+                                {{item.zipCode}}</label></div>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+
+
+                      <div class="row" style="border-top: 1px solid #ccc;">
+
+
+                        <div class="col-sm-12 mt-2">
+                          <div class="user-info-det"><label title="Group Description"><i class="fas fa-info-circle"></i>
+                              {{item.groupDescription}}</label></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+
+              </div>
+            </div>
+            <!-- <div class="col-sm-12">
+              <div class="mb-3 ">
+                <div class="col-sm-12" style="text-align: right;">
+                  <a href="javascript:void(0)" (click)="addDocument()" class="btn btn-primary ">Upload Document</a>
+                </div>
+                <hr>
+                <small *ngIf="!isFileSelected">No Document uploaded yet. Please upload document here.</small>
+                <div class="table-responsive mt-2">
+                  <table class="table align-middle table-nowrap table-hover table-border mb-0">
+                    <tbody>
+                      <tr *ngFor="let file of docList; let i = index">
+                        <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
+                              class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
+                            {{file.documentName}}
+                          </a>
+                        </td>
+                        <td style="width: 90px;">
+                          <div>
+                            <ul class="list-inline mb-0 font-size-16">
+                              <li class="list-inline-item">
+                                <a href="javascript: void(0);" class="text-danger p-1"
+                                  (click)="onDocumentRemove(file)"><i class="bx bxs-trash"></i></a>
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div> -->
+            <div class="col-sm-12" *ngIf="docCount > 0 && userType != 'Facilitator'">
+              <h4 class="card-title mt-4 mb-2">Documents
+                <a href="javascript:void(0)" (click)="addDocument()" class="btn btn-primary float-end">+</a>
+              </h4>
+              <hr>
+              <div class="table-responsive mt-2">
+                <table class="table align-middle table-nowrap table-hover table-border mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" style="width: 70px;">#</th>
+                      <th scope="col" class="sort-none">File Name</th>
+                      <th scope="col" class="sort-none">Document Type</th>
+                      <th scope="col" class="sort-none">Extension</th>
+                      <th scope="col" class="sort-none">Size</th>
+                      <th scope="col" class="sort-none width-action">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let file of documentList; let i = index">
+                      <td>{{i + 1}}</td>
+                      <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
+                            class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
+                          <span *ngIf="file.documentName">{{file.documentName}}</span>
+                          <span *ngIf="!file.documentName">NA</span>
+                        </a>
+                      </td>
+                      <td>
+                        <span *ngIf="file.documentType">{{file.documentType}}</span>
+                        <span *ngIf="!file.documentType">NA</span>
+                      </td>
+                      <td>
+                        <span *ngIf="file.fileType">{{file.fileType}}</span>
+                        <span *ngIf="!file.fileType">NA</span>
+                      </td>
+                      <td>
+                        <span *ngIf="file.fileSize">{{file.fileSize/1024|number:'0.0-2'}} KB</span>
+                        <span *ngIf="!file.fileSize">NA</span>
+                      </td>
+                      <td style="width: 90px;">
+                        <div>
+
+                          <ul class="list-inline mb-0 font-size-16">
+                            <li class="list-inline-item">
+                              <a href="javascript: void(0);"
+                                (click)="downloadDocument(file.id, file.documentName, file.fileType)"
+                                class="text-success p-1"><i class="bx bx-file bx-sm"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                              <a href="javascript: void(0);" class="text-danger p-1" (click)="confirmDelete(file)"><i
+                                  class="bx bxs-trash"></i></a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- <div class="card overflow-hidden" *ngIf="!isFileSelected">
+              <div class="card-body pt-0">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="user-info">
+                      <div class="row">
+                        <label for="">No Document uploaded yet. Please upload document here.</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="col-sm-12" *ngIf="subscriptionList">
+
+              <!-- <h4 class="card-title mt-4 mb-2">Active Plan
+                <span class="float-end">
+                  <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="upgradePlan()">Upgrade plan</button>&nbsp;
+                  <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="cancelPlan(item.id)">Cancel plan</button>
+
+                </span>
+              </h4>
+
+              <hr> -->
+              <div class="user-info" *ngFor="let item of subscriptionList; let i = index">
+                <h4 class="card-title mt-4 mb-2">Active Plan
+                  <span *ngIf="userId==item.userId" class="float-end">
+                    <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="upgradePlan()">Upgrade
+                      plan</button>&nbsp;
+                    <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="cancelPlan(item.id)">Cancel
+                      plan</button>
+
+                  </span>
+                </h4>
+
+                <hr>
+                <!-- <button href="javascript: void(0);" class="btn btn-info btn-sm p-1" (click)="cancelPlan(item.id)">Cancel
+                  Plan</button>&nbsp;
+                <button href="javascript: void(0);" class="btn btn-info btn-sm p-1" (click)="upgradePlan()">Upgrate
+                  plan</button> -->
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Subscription Plan"><i class="fas fa-users"></i> {{item.subscriptionPlan}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Users | Valid Till"><i class="fas fa-hashtag"></i> <strong>Plan Description</strong>
+                        Total Allowed users - {{item.memberAllow}} | Valid Till
+                        {{item.exprirationDate|date:'dd MMM yyyy'}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Purchase Date"><i class="fas fa-calendar-day"></i> {{item.startDate|date:'dd MMM
+                        yyyy'}}</label>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Status"><i class="fas fa-toggle-on"></i> <a href="javascript:void(0);"
+                          class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Active'||item.status =='Suspended'">
+                          {{item.status}}</a>
+                        <a href="javascript:void(0);" class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Passed'">
+                          {{item.status}}</a></label>
+                    </div>
+                  </div> -->
+                </div>
+
+              </div>
+              <!-- <div class="table-responsive mt-2">
+                <table class="table align-middle table-nowrap table-hover table-border mb-0">
+                  <thead class="table-light">
+                    <tr>
+
+                      <th scope="col">User/Group Name</th>
+                      <th scope="col">User Type</th>
+                      <th scope="col">Purchase Date</th>
+                      <th scope="col">Subscription Plan</th>
+                      <th scope="col">Users (As per Plan)</th>
+                      <th scope="col">Status</th>
+
+                      <th scope="col">Valid Till</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of subscriptionList; let i = index">
+
+                      <td>
+                        <div class="grid-user">
+                          <h5 class="font-size-14 mb-1"><a href="javascript: void(0);"
+                              class="text-dark">{{item.userName|titlecase}} <i class="fas fa-external-link-alt"></i></a>
+                          </h5>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.userType|titlecase}}</p>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.startDate|date:'dd MMM yyyy'}}</p>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.subscriptionPlan}}</p>
+                      </td>
+                      <td>
+                        {{item.memberAllow}}
+                      </td>
+                      <td>
+                        <a href="javascript:void(0);" class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Active'||item.status =='Suspended'">
+                          {{item.status}}</a>
+                        <a href="javascript:void(0);" class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Passed'">
+                          {{item.status}}</a>
+
+                      </td>
+
+                      <td>
+                        {{item.exprirationDate|date:'dd MMM yyyy'}}
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </div> -->
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden" *ngIf="groupProfileData">
+        <!-- <div class="bg-soft bg-primary">
+          <div class="row">
+            <div class="col-10">
+              <div class="text-secondary p-3">
+                <h5>{{groupProfileData?.firstName}} <span
+                    *ngIf="userProfile?.middleName">{{groupProfileData?.middleName}}</span>
+                  {{groupProfileData?.lastName}}</h5>
+                <p>{{groupProfileData?.email}}</p>
+              </div>
+            </div>
+            <div class="col-2 align-self-end">
+              <img src="assets/images/profile-img.png" alt="" class="img-fluid">
+            </div>
+          </div>
+        </div> -->
+        <div class="card-body pt-0">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="user-info">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <h5 class=" mb-2">Personal Information
+                      <button
+                        *ngIf="userType == 'ConsultantGroup' || userType == 'ConsulteeGroup' || userType == 'HybridGroup'"
+                        (click)="editGroupProfile()" class="btn btn-info btn-sm float-end">Edit
+                        <i class="fas fa-edit ms-1"></i></button>
+
+                      <button
+                        *ngIf="userType != 'ConsultantGroup' && userType != 'ConsulteeGroup' && userType != 'HybridGroup'"
+                        (click)="editBasicProfile()" class="btn btn-info btn-sm float-end">Edit
+                        <i class="fas fa-edit ms-1"></i></button>
+                    </h5>
+                    <hr>
+                  </div>
+
+                  <div class="col-sm-11">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div ngbTooltip="Group Name" class="user-info-det"><label ngbTooltip="Details"
+                            class="text-capitalize"><i class="fas fa-users"></i>
+                            <strong class="text-md"> {{groupProfileData?.groupName}}</strong> <small>
+                              ({{groupProfileData?.providerGroupType}})</small></label></div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="user-info-det"><label title="Group Admin Name" class="text-capitalize"><i
+                              class="far fa-user"></i>
+                            {{groupProfileData?.firstName}} <span
+                              *ngIf="groupProfileData?.middleName">{{groupProfileData?.middleName}} </span>
+                            {{groupProfileData?.lastName}}
+                          </label></div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="user-info-det"><label title="Email Id">
+                            <i class="far fa-envelope"></i> {{groupProfileData?.email}}</label></div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <!-- <div class="col-sm-6">
+                        <div class="user-info-det"><label title="Group Type"><i class="fas fa-users-cog"></i>
+                            {{groupProfileData?.providerGroupType}}</label></div>
+                      </div> -->
+                    
+                      <div class="col-sm-4">
+                        <div class="user-info-det"><label title="Mobile Number">
+                            <i class="fas fa-phone-alt"></i> {{groupProfileData?.phoneNumber}}</label></div>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <div class="user-info-det">
+                          <label title="TimeZone"><i class="fas fa-mail-bulk"></i>
+                            {{groupProfileData?.timeZoneShow}}</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-4" *ngIf="iswebSiteUrl">
+                        <div class="user-info-det">
+                          <a href="https://{{userProfile?.websiteUrl}}">
+                            <label title="Website Url"><i class="fas fa-phone-alt"></i>
+                              {{groupProfileData?.websiteUrl}}</label> </a>
+                        </div>
+                      </div>
+                      <!-- <div class="col-sm-4">
+                        <div class="user-info-det"><label title="Account Status">
+                            <i class="fas fa-toggle-on"></i>
+                            <span *ngIf="groupProfileData?.isActive;else notActive"
+                              class="badge badge-soft-primary font-size-14">Active</span>
+                            <ng-template #notActive>
+                              <span class="badge badge-soft-danger font-size-14">Inactive</span>
+                            </ng-template>
+                          </label></div>
+                      </div> -->
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-8">
+                        <div class="user-info-det"><label title="Address"><i class="fas fa-map-marker-alt"></i>
+                            <span>{{groupProfileData?.address}},</span> <span> {{groupProfileData?.city}},</span>
+                            <span> {{groupProfileData?.state}},</span> <span> {{groupProfileData?.country}}</span>
+                          </label></div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="user-info-det"><label title="ZIP/Postal Code"><i class="fas fa-mail-bulk"></i>
+                            {{groupProfileData?.zipCode}}</label></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1 text-center">
+                    <div class=" mb-0">
+                      <img ngbTooltip="image Change"
+                        [src]="groupProfileData?.profilePicUrl||'assets/images/users/avatar-blank.png'" alt=""
+                        class="img-thumbnail rounded-circle">
+                    </div>
+                    <a ngbTooltip="image Change" class="click-btn images-change" (click)="f.click()" type="submit"><i
+                        class="fas fa-user-edit ms-1"></i></a>
+                    <input style="display: none;" #f type="file" (change)="selectProfileImage($event,'group')"
+                      id="file-input" accept="image/png, image/jpeg">
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <div class="col-sm-12" *ngIf="documentList">
+              <h4 class="card-title mt-4 mb-2">Documents
+                <a href="javascript:void(0)" (click)="addDocument()" class="btn btn-primary float-end">+</a>
+
+              </h4>
+
+              <hr>
+              <div class="table-responsive mt-2">
+                <table class="table align-middle table-nowrap table-hover table-border mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" style="width: 70px;">#</th>
+                      <th scope="col" class="sort-none">File Name</th>
+                      <th scope="col" class="sort-none">Document Type</th>
+                      <th scope="col" class="sort-none">Extension</th>
+                      <th scope="col" class="sort-none">Size</th>
+                      <th scope="col" class="sort-none width-action">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let file of documentList; let i = index">
+                      <td>{{i + 1}}</td>
+                      <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
+                            class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
+                          <span *ngIf="file.documentName">{{file.documentName}}</span>
+                          <span *ngIf="!file.documentName">NA</span>
+                        </a>
+                      </td>
+                      <td>
+                        <span *ngIf="file.documentType">{{file.documentType}}</span>
+                        <span *ngIf="!file.documentType">NA</span>
+                      </td>
+                      <td>
+                        <span *ngIf="file.fileType">{{file.fileType}}</span>
+                        <span *ngIf="!file.fileType">NA</span>
+                      </td>
+                      <td>
+                        <span *ngIf="file.fileSize">{{file.fileSize/1024|number:'0.0-2'}} KB</span>
+                        <span *ngIf="!file.fileSize">NA</span>
+                      </td>
+                      <td style="width: 90px;">
+                        <div>
+
+                          <ul class="list-inline mb-0 font-size-16">
+                            <li class="list-inline-item">
+                              <a href="javascript: void(0);"
+                                (click)="downloadDocument(file.id, file.documentName, file.fileType)"
+                                class="text-success p-1"><i class="bx bx-file bx-sm"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                              <a href="javascript: void(0);" class="text-danger p-1" (click)="confirmDelete(file)"><i
+                                  class="bx bxs-trash"></i></a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="" *ngIf="!isFileSelected">
+              <div class="card-body pt-0">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="user-info">
+                      <div class="row">
+                        <label for="">No Document uploaded yet. Please upload document here.</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="subscriptionList">
+
+              <!-- <h4 class="card-title mt-4 mb-2">Active Plan
+                <span class="float-end">
+                  <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="upgradePlan()">Upgrade plan</button>&nbsp;
+                  <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="cancelPlan(item.id)">Cancel plan</button>
+
+                </span>
+              </h4>
+
+              <hr> -->
+              <div class="user-info" *ngFor="let item of subscriptionList; let i = index">
+                <h4 class="card-title mt-4 mb-2">Active Plan
+                  <span class="float-end">
+                    <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="upgradePlan()">Upgrade
+                      plan</button>&nbsp;
+                    <button href="javascript: void(0);" class="btn btn-info btn-sm" (click)="cancelPlan(item.id)">Cancel
+                      plan</button>
+
+                  </span>
+                </h4>
+
+                <hr>
+                <!-- <button href="javascript: void(0);" class="btn btn-info btn-sm p-1" (click)="cancelPlan(item.id)">Cancel
+                  Plan</button>&nbsp;
+                <button href="javascript: void(0);" class="btn btn-info btn-sm p-1" (click)="upgradePlan()">Upgrate
+                  plan</button> -->
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Subscription Plan"><i class="fas fa-users"></i> {{item.subscriptionPlan}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Users | Valid Till"><i class="fas fa-hashtag"></i> <strong>Plan Description</strong>
+                        Total Allowed users - {{item.memberAllow}} | Valid Till
+                        {{item.exprirationDate|date:'dd MMM yyyy'}}</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="user-info-det">
+                      <label title="Purchase Date"><i class="fas fa-calendar-day"></i> {{item.startDate|date:'dd MMM
+                        yyyy'}}</label>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-12">
+                    <div class="user-info-det">
+                      
+                      
+                        <readonly-switch [checked]="true" (click)="cancelPaypalSubscription(item.id)">
+                        </readonly-switch>
+                      
+                     
+                    </div>
+                  </div> -->
+                </div>
+
+              </div>
+              <!-- <div class="table-responsive mt-2">
+                <table class="table align-middle table-nowrap table-hover table-border mb-0">
+                  <thead class="table-light">
+                    <tr>
+
+                      <th scope="col">User/Group Name</th>
+                      <th scope="col">User Type</th>
+                      <th scope="col">Purchase Date</th>
+                      <th scope="col">Subscription Plan</th>
+                      <th scope="col">Users (As per Plan)</th>
+                      <th scope="col">Status</th>
+
+                      <th scope="col">Valid Till</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of subscriptionList; let i = index">
+
+                      <td>
+                        <div class="grid-user">
+                          <h5 class="font-size-14 mb-1"><a href="javascript: void(0);"
+                              class="text-dark">{{item.userName|titlecase}} <i class="fas fa-external-link-alt"></i></a>
+                          </h5>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.userType|titlecase}}</p>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.startDate|date:'dd MMM yyyy'}}</p>
+                      </td>
+                      <td>
+                        <p class="text-muted mb-0">{{item.subscriptionPlan}}</p>
+                      </td>
+                      <td>
+                        {{item.subscriptionPlanUserType}}
+                      </td>
+                      <td>
+                        <a href="javascript:void(0);" class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Active'||item.status =='Suspended'">
+                          {{item.status}}</a>
+                        <a href="javascript:void(0);" class="badge badge-soft-primary font-size-13 m-1"
+                          *ngIf="item.status =='Passed'">
+                          {{item.status}}</a>
+
+                      </td>
+
+                      <td>
+                        {{item.exprirationDate|date:'dd MMM yyyy'}}
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </div> -->
+
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <!-- end card -->
+    </div>
+  </div>
+  <!-- end row -->
+</div>
